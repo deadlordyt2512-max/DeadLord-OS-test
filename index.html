@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#070b14">
+<title>DEADLORD OS | DL-015</title>
+<style>
+:root{--bg:#070b14;--panel:#0d1524;--line:#183653;--blue:#36a9ff;--cyan:#7be0ff;--muted:#91a8c1;--text:#eaf5ff;--good:#64f0ba;--bad:#ff6d85}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top,#102642 0%,var(--bg) 55%);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;min-height:100vh}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.13;background-image:linear-gradient(#2b8ac0 1px,transparent 1px),linear-gradient(90deg,#2b8ac0 1px,transparent 1px);background-size:34px 34px;mask-image:linear-gradient(to bottom,black,transparent 75%)}
+main{width:min(760px,calc(100% - 28px));margin:30px auto;position:relative}
+header,.panel{border:1px solid var(--line);background:rgba(9,17,30,.94);border-radius:18px;box-shadow:0 0 35px #0077ff12}
+header{padding:22px;margin-bottom:16px}
+.brand{display:flex;align-items:center;gap:14px}.sigil{display:grid;place-items:center;width:54px;height:54px;border:1px solid var(--blue);border-radius:14px;color:var(--cyan);font-size:26px;text-shadow:0 0 15px var(--blue);box-shadow:inset 0 0 20px #168dff25}
+h1{font-size:clamp(20px,5vw,29px);letter-spacing:2px;margin:0;color:var(--cyan)}.sub{font-size:11px;color:var(--muted);letter-spacing:1.5px;margin-top:6px}
+.status{margin-left:auto;color:var(--good);font-size:11px;white-space:nowrap}
+.panel{padding:clamp(18px,4vw,30px)}
+.kicker{color:var(--blue);font-size:12px;letter-spacing:2px;text-transform:uppercase}
+h2{font-size:clamp(22px,5vw,34px);line-height:1.2;margin:12px 0}
+p{line-height:1.65;color:#b6c8dc}
+button{font:inherit;cursor:pointer;border-radius:10px;padding:13px 16px;border:1px solid var(--blue);background:#102a44;color:var(--cyan);transition:.18s}
+button:hover{background:#16416a;box-shadow:0 0 22px #168dff30;transform:translateY(-1px)}
+button:focus-visible,input:focus-visible{outline:2px solid white;outline-offset:3px}
+.primary{width:100%;margin-top:15px;background:linear-gradient(100deg,#0d4c82,#102943);font-weight:bold;letter-spacing:1px}
+.small{font-size:12px;color:var(--muted)}
+.hidden{display:none!important}
+.progressrow{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:12px;margin-bottom:10px}
+.track{height:7px;background:#16283b;border-radius:9px;overflow:hidden;margin-bottom:25px}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:width .25s}
+.question{font-size:clamp(19px,4vw,25px);line-height:1.35;margin:8px 0 22px}
+.options{display:grid;gap:10px}
+.option{display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid #203851;border-radius:12px;background:#0a1321;cursor:pointer;line-height:1.45}
+.option:hover{border-color:#338dd2}.option input{accent-color:#38b6ff;margin-top:4px;flex-shrink:0}.option:has(input:checked){border-color:var(--blue);background:#102743}
+.actions{display:flex;gap:10px;margin-top:22px}.actions button{flex:1}.actions .secondary{border-color:#2b4058;color:#a8bdd2;background:#0a1321}
+.result{text-align:center}.rankicon{font-size:48px;filter:drop-shadow(0 0 16px #258dff)}.score{font-size:clamp(44px,10vw,66px);color:var(--cyan);font-weight:800;margin:8px}.rank{font-size:clamp(22px,5vw,30px);color:var(--cyan);margin:8px 0}.resultbox{border:1px solid var(--line);border-radius:14px;padding:18px;margin:20px 0;background:#0a1321}
+.review{border-top:1px solid var(--line);padding:15px 0;text-align:left}.review strong{display:block;margin-bottom:8px;line-height:1.5}.correct{color:var(--good)}.incorrect{color:var(--bad)}
+footer{text-align:center;color:#59748f;font-size:10px;letter-spacing:1px;padding:18px}
+@media(max-width:480px){main{margin:14px auto}.status{font-size:9px}.sigil{width:45px;height:45px}.actions{flex-direction:column}}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div class="brand">
+    <div class="sigil">ϟ</div>
+    <div><h1>DEADLORD OS</h1><div class="sub">KNOWLEDGE ASSESSMENT // DL-015</div></div>
+    <div class="status">● ONLINE</div>
+  </div>
+</header>
+
+<section id="intro" class="panel">
+  <div class="kicker">Protocolo de evaluación iniciado</div>
+  <h2>¿CUÁNTO SABES DE DL?</h2>
+  <p>Bienvenido, usuario. Demuestra cuánto conoces el universo de Dead Lord. Responde las 15 preguntas de opción múltiple y descubre tu rango.</p>
+  <div class="resultbox" style="text-align:left">
+    <div class="kicker">Especificaciones</div>
+    <p style="margin-bottom:0">15 preguntas · 1 punto por acierto<br>4 rangos posibles · Corrección automática</p>
+  </div>
+  <p class="small">Consejo del sistema: responde según el lore que conoces. Puedes volver a la pregunta anterior antes de enviar.</p>
+  <button class="primary" id="start">▶ INICIAR PROTOCOLO</button>
+</section>
+
+<section id="quiz" class="panel hidden">
+  <div class="progressrow"><span id="qcount">PREGUNTA 01 / 15</span><span id="progresspct">7% COMPLETADO</span></div>
+  <div class="track"><div class="bar" id="bar"></div></div>
+  <div class="kicker">Pregunta de conocimiento</div>
+  <h2 class="question" id="question"></h2>
+  <div class="options" id="options"></div>
+  <div class="actions"><button class="secondary" id="prev">← ANTERIOR</button><button id="next">SIGUIENTE →</button></div>
+  <p class="small" id="hint">Selecciona una respuesta para continuar.</p>
+</section>
+
+<section id="result" class="panel hidden result">
+  <div class="kicker">Protocolo completado</div>
+  <div class="rankicon" id="rankicon">⚡</div>
+  <div class="score"><span id="score">0</span><span style="font-size:22px;color:#91a8c1"> / 15</span></div>
+  <h2 class="rank" id="rank"></h2>
+  <p id="rankdesc"></p>
+  <div class="resultbox"><div class="kicker">Informe del sistema</div><p id="report" style="margin-bottom:0"></p></div>
+  <button class="primary" id="toggleReview">⌕ REVISAR RESPUESTAS</button>
+  <div id="review" class="hidden" style="margin-top:15px"></div>
+  <button class="primary" id="retry">↻ REPETIR EXAMEN</button>
+</section>
+<footer>DEADLORD OS v1.0 // FAN KNOWLEDGE TEST // SYSTEM READY</footer>
+</main>
+<script>
+const questions = [
+ {q:"Antes de que el mundo conociera el nombre de Dead Lord, ¿cómo se llamaba?",a:["Sergio","Sensei","Inferno","Sombra"],c:0},
+ {q:"¿Qué despertó la curiosidad de Sergio desde pequeño?",a:["La cocina","La tecnología y los fallos informáticos","Los deportes","La astronomía exclusivamente"],c:1},
+ {q:"¿Qué quería comprender Sergio cuando una computadora dejaba de funcionar?",a:["Cómo decorarla","Cómo venderla","Qué ocurría cuando fallaba","Cómo cambiarle el color"],c:2},
+ {q:"¿Quién es Sensei dentro del universo DL?",a:["Un rival desconocido","La mano derecha y el inventor","Un sistema operativo rival","Un personaje sin relación con DL"],c:1},
+ {q:"¿Qué relación tiene Inferno con Dead Lord?",a:["Es su enemigo","Es su profesor de música","Es el nombre de una computadora","Es su sistema de puntuación"],c:0},
+ {q:"¿Qué personaje está relacionado con los conejos y tiene una personalidad fresa?",a:["Sensei","Inferno","Bunny Girl","DEADLORD OS"],c:2},
+ {q:"¿Qué relación tuvo Bunny Girl con DL?",a:["Fue su profesora","Fue su antigua compañera","Fue la creadora de Google","Nunca tuvo relación con él"],c:1},
+ {q:"¿Cuál de estos efectos forma parte de la estética de Dead Lord?",a:["Glitches y efectos eléctricos","Pintura de acuarela exclusivamente","Estilo medieval exclusivamente","Animaciones sin efectos"],c:0},
+ {q:"¿Qué tipo de tecnología aparece entre las ideas del universo DL?",a:["Máquinas de escribir únicamente","Hologramas y pantallas flotantes","Telégrafos exclusivamente","Solo teléfonos antiguos"],c:1},
+ {q:"¿Qué programa está relacionado con los proyectos electrónicos de DL?",a:["Arduino IDE","Una calculadora de bolsillo","Un reproductor de DVD","Un editor de texto exclusivamente"],c:0},
+ {q:"¿Cuál de estos elementos representa mejor la identidad visual de DL?",a:["Rosa pastel y flores","Marrón y estilo rústico","Negro y azul eléctrico","Blanco y dorado exclusivamente"],c:2},
+ {q:"¿Qué clase de efectos tecnológicos se asocian con los poderes de DL?",a:["Glitches y teletransportación","Invisibilidad permanente sin tecnología","Control del clima como único poder","Transformación en animales como único poder"],c:0},
+ {q:"¿Qué papel tiene Sensei además de ser la mano derecha de DL?",a:["Es el inventor","Es el narrador de Google Forms","Es un personaje sin habilidades","Es el creador de Bunny Girl"],c:0},
+ {q:"¿Cuál sería una señal de que alguien conoce el lore de DL de verdad?",a:["Reconocer solamente el color azul","Conocer personajes, relaciones e historia","Adivinar sin leer ninguna pregunta","Conocer únicamente el nombre del sistema"],c:1},
+ {q:"¿Qué representa completar este examen de DEADLORD OS?",a:["Una actualización de Windows","Una prueba de conocimiento del universo DL","Un concurso de videojuegos ajeno a DL","Una prueba de velocidad de internet"],c:1}
+];
+let current=0, answers=Array(questions.length).fill(null), lastScore=0;
+const $=id=>document.getElementById(id);
+function show(id){["intro","quiz","result"].forEach(x=>$(x).classList.toggle("hidden",x!==id));}
+$("start").addEventListener("click",()=>{current=0;show("quiz");renderQuestion();});
+function renderQuestion(){
+ const q=questions[current], n=current+1, pct=Math.round(n/questions.length*100);
+ $("qcount").textContent=`PREGUNTA ${String(n).padStart(2,"0")} / ${questions.length}`;
+ $("progresspct").textContent=`${pct}% COMPLETADO`; $("bar").style.width=pct+"%";
+ $("question").textContent=q.q; $("options").replaceChildren();
+ q.a.forEach((label,i)=>{
+   const lab=document.createElement("label");lab.className="option";
+   const inp=document.createElement("input");inp.type="radio";inp.name="answer";inp.value=i;inp.checked=answers[current]===i;
+   inp.addEventListener("change",()=>{answers[current]=i;});
+   const span=document.createElement("span");span.textContent=String.fromCharCode(65+i)+". "+label;
+   lab.append(inp,span);$("options").append(lab);
+ });
+ $("prev").disabled=current===0;$("prev").style.opacity=current===0?".45":"1";
+ $("next").textContent=current===questions.length-1?"CALCULAR RANGO ⚡":"SIGUIENTE →";
+ $("hint").textContent=answers[current]===null?"Selecciona una respuesta para continuar.":"Respuesta registrada. Puedes cambiarla antes de finalizar.";
+}
+$("prev").addEventListener("click",()=>{if(current>0){current--;renderQuestion();}});
+$("next").addEventListener("click",()=>{
+ if(answers[current]===null){$("hint").textContent="⚠ Selecciona una respuesta antes de continuar.";return;}
+ if(current<questions.length-1){current++;renderQuestion();}else finish();
+});
+function finish(){
+ lastScore=questions.reduce((sum,q,i)=>sum+(answers[i]===q.c?1:0),0);
+ let rank,icon,desc;
+ if(lastScore<=4){rank="USUARIO NUEVO";icon="◈";desc="Tu recorrido por el universo DL apenas comienza. ¡Sigue explorando!";}
+ else if(lastScore<=8){rank="OPERADOR DL";icon="⌘";desc="Ya conoces varias piezas del universo. El sistema detecta progreso.";}
+ else if(lastScore<=12){rank="EXPERTO DL";icon="ϟ";desc="Buen conocimiento de personajes, historia y tecnología de DL.";}
+ else{rank="LEYENDA DL";icon="♛";desc="Rango máximo alcanzado. Has demostrado un conocimiento sobresaliente.";}
+ $("score").textContent=lastScore;$("rank").textContent=rank;$("rankicon").textContent=icon;$("rankdesc").textContent=desc;
+ $("report").textContent=`Aciertos: ${lastScore} de 15. Precisión: ${Math.round(lastScore/15*100)}%. Rango asignado: ${rank}.`;
+ $("review").classList.add("hidden");$("toggleReview").textContent="⌕ REVISAR RESPUESTAS";buildReview();show("result");
+}
+function buildReview(){
+ const root=$("review");root.replaceChildren();
+ questions.forEach((q,i)=>{
+   const d=document.createElement("div");d.className="review";
+   const title=document.createElement("strong");title.textContent=`${String(i+1).padStart(2,"0")}. ${q.q}`;
+   const yours=document.createElement("div");const ok=answers[i]===q.c;
+   yours.className=ok?"correct":"incorrect";
+   yours.textContent=(ok?"✓ Tu respuesta: ":"✗ Tu respuesta: ")+(answers[i]===null?"Sin responder":q.a[answers[i]]);
+   const correct=document.createElement("div");correct.className="correct";correct.textContent="Respuesta correcta: "+q.a[q.c];
+   d.append(title,yours,correct);root.append(d);
+ });
+}
+$("toggleReview").addEventListener("click",()=>{const hidden=$("review").classList.toggle("hidden");$("toggleReview").textContent=hidden?"⌕ REVISAR RESPUESTAS":"⌃ OCULTAR RESPUESTAS";});
+$("retry").addEventListener("click",()=>{current=0;answers=Array(questions.length).fill(null);show("intro");});
+</script>
+</body>
+</html>
